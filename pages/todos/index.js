@@ -9,14 +9,22 @@ import completeTodo from "../../utils/todos/completeTodo";
 
 import Image from 'next/image'
 import searchicon from "../../data/search.svg"
-import complete from "../../data/complete.svg"
+import copy from "../../data/copy.svg"
+import copyhover from "../../data/copyhover.svg"
 import favourite from "../../data/favourite.svg"
+import favouritehover from "../../data/favouritehover.svg"
 import deleteico from "../../data/delete.svg"
+import deleteicohover from "../../data/deletehover.svg"
 import todoDefault from "../../data/todoDefault.svg"
+import logo from "../../data/logo.svg"
+
 
 export default function Todos() {
   const [todos, setTodos] = useState([]);
   const [hover, setHover] = useState(-1);
+  const [hoverCopy, setHoverCopy] = useState(-1);
+  const [hoverStar, setHoverStar] = useState(-1);
+  const [hoverDelete, setHoverDelete] = useState(-1);
 
   const showHoverHandler = (i) => {
     setHover(i);
@@ -74,33 +82,38 @@ export default function Todos() {
     height:"2rem",
     paddingLeft:"4px",
     boxShadow: hover===id? "1px 3px 1px #E0E0E0" : "none",
-    border: hover===id? "1px solid #E0E0E0" : "none",
-    borderRadious: "50px",
+    border: hover===id? "1px solid #E0E0E0" : "1px solid white",
+    borderRadious: "100px",
   })
+
+  console.log(todos)
 
   return (
     <div style={HomeStyle}>
-      <h1>Todo List</h1>
+      <h1><Image src={logo} alt="logoImg" style={{marginRight:"1rem"}} />Todo List</h1>
 
       {/* Search bar */}
       <div style={searchDiv}>
 
-        <div style={{radius:"100px", width:"100%", display:"flex",alignItems: "center", border:"1px solid #E0E0E0", borderRadius:"100px", padding:"4px 15px", }}>
+        <div style={{radius:"100px", flex:"1", display:"flex",alignItems: "center", border:"1px solid #E0E0E0", borderRadius:"100px", padding:"4px 15px", }}>
           <Image src={searchicon} alt="searchIco" />
           <input type="text" placeholder="Search by title" style={{radius:"100px",border:"none",outline:"none", width:"100%"}} />
         </div>
 
         {/* Sorting dropdown */}
-        <div style={{marginLeft:"1rem"}}>
+        <div style={{marginLeft:"1rem",}}>
           <select style={{outline:"none", border:"none", appearance:"none"}}>
-            <option value="title">Sort by</option>
-            <option value="createdAt">Created At (Asc)</option>
-            <option value="-createdAt">Created At (Desc)</option>
+            <option style={{backgroundColor:"#646268", color:"white"}} value="title">Sort by</option>
+            <option id="todo-sort-dropdown__title-ascending" style={{backgroundColor:"#646268", color:"white"}} value="title">Title (^)</option>
+            <option id="todo-sort-dropdown__title-descending" style={{backgroundColor:"#646268", color:"white"}} value="title">Title (v)</option>
+            <option id="todo-sort-dropdown__due-date-ascending" style={{backgroundColor:"#646268", color:"white"}} value="createdAt">Due date (^)</option>
+            <option id="todo-sort-dropdown__due-date-descending" style={{backgroundColor:"#646268", color:"white"}} value="-createdAt">Due date (v)</option>
+            <option id="todo-sort-dropdown__created-date-descending" style={{backgroundColor:"#646268", color:"white"}} value="-createdAt">Create Date (v)</option>
           </select>
         </div>
 
         {/* Activity Log */}
-        <Link href="/" style={{textColor:"blue"}}>Activity_Log</Link>
+        <Link href="/" style={{textColor:"blue"}}>Activity Log</Link>
 
       </div>
 
@@ -120,9 +133,33 @@ export default function Todos() {
           >
             {todo.title}
             <div style={{display:"flex", alignItems:"center"}}>
-              <button style={threeButtons(todo.id)} onClick={() => handleComplete(todo.id)}><Image src={complete} /></button>
-              <button style={threeButtons(todo.id)}><Image src={favourite} /></button>
-              <button style={threeButtons(todo.id)} onClick={() => handleDelete(todo.id)}><Image src={deleteico} /></button>
+
+              <button 
+                style={threeButtons(todo.id)} 
+                onMouseEnter={()=>{setHoverCopy(todo.id)}} 
+                onMouseLeave={()=>{setHoverCopy(-1)}} 
+                onClick={() => handleComplete(todo.id)}
+              >
+                {hoverCopy===-1? <Image src={copy} /> : <Image src={copyhover} />}
+              </button>
+
+              <button 
+                style={threeButtons(todo.id)}
+                onMouseEnter={()=>{setHoverStar(todo.id)}} 
+                onMouseLeave={()=>{setHoverStar(-1)}} 
+              >
+                {hoverStar===-1? <Image src={favourite} /> : <Image src={favouritehover} />}
+              </button>
+
+              <button 
+                style={threeButtons(todo.id)} 
+                onClick={() => handleDelete(todo.id)}
+                onMouseEnter={()=>{setHoverDelete(todo.id)}} 
+                onMouseLeave={()=>{setHoverDelete(-1)}}                
+              >
+                {hoverDelete===-1? <Image src={deleteico} /> : <Image src={deleteicohover} />}
+              </button>
+
             </div>
           </div>
           </div>
