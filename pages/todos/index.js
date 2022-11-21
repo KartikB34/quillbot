@@ -17,6 +17,7 @@ import deleteico from "../../data/delete.svg"
 import deleteicohover from "../../data/deletehover.svg"
 import todoDefault from "../../data/todoDefault.svg"
 import logo from "../../data/logo.svg"
+import right from "../../data/right.svg"
 
 
 export default function Todos() {
@@ -25,6 +26,10 @@ export default function Todos() {
   const [hoverCopy, setHoverCopy] = useState(-1);
   const [hoverStar, setHoverStar] = useState(-1);
   const [hoverDelete, setHoverDelete] = useState(-1);
+
+  const [title, setTitle] = useState("");
+
+  const [editTitle, setEditTitle] = useState(-1);
 
   const showHoverHandler = (i) => {
     setHover(i);
@@ -102,7 +107,7 @@ export default function Todos() {
 
         {/* Sorting dropdown */}
         <div style={{marginLeft:"1rem",}}>
-          <select style={{outline:"none", border:"none", appearance:"none"}}>
+          <select id={`todo-sort-dropdown`} style={{outline:"none", border:"none", appearance:"none"}}>
             <option style={{backgroundColor:"#646268", color:"white"}} value="title">Sort by</option>
             <option id="todo-sort-dropdown__title-ascending" style={{backgroundColor:"#646268", color:"white"}} value="title">Title (^)</option>
             <option id="todo-sort-dropdown__title-descending" style={{backgroundColor:"#646268", color:"white"}} value="title">Title (v)</option>
@@ -123,6 +128,7 @@ export default function Todos() {
           <Image src={todoDefault} style={{marginRight:"1rem"}} />
           <div
             key={todo.id}
+            id={`todo-${todo.id}`}
             style={{
               textDecoration: todo.completed ? "line-through" : "none",
               display:"flex",
@@ -131,11 +137,22 @@ export default function Todos() {
               alignItems:"center",
             }}
           >
-            {todo.title}
+            <div>
+              {editTitle===todo.id? <div> 
+                    <form>
+                      <input id={`todo-edit-title-text-field__${todo.id}`} onChange={(e)=>setEditTitle(e.target.value)} value={editTitle}/>
+                      <button type="submit" onClick={()=>{todo.title=editTitle}}><Image  src={right} /></button>
+                    </form>  
+                  </div> : 
+                <div onClick={()=>{setEditTitle(todo.id)}}>
+                  {todo.title}
+                </div>}
+            </div>
             <div style={{display:"flex", alignItems:"center"}}>
 
               <button 
-                style={threeButtons(todo.id)} 
+                style={threeButtons(todo.id)}
+                id={`todo-duplicate-button__${todo.id}`} 
                 onMouseEnter={()=>{setHoverCopy(todo.id)}} 
                 onMouseLeave={()=>{setHoverCopy(-1)}} 
                 onClick={() => handleComplete(todo.id)}
@@ -147,6 +164,7 @@ export default function Todos() {
                 style={threeButtons(todo.id)}
                 onMouseEnter={()=>{setHoverStar(todo.id)}} 
                 onMouseLeave={()=>{setHoverStar(-1)}} 
+                id={`todo-star-button__${todo.id}`}
               >
                 {hoverStar===-1? <Image src={favourite} /> : <Image src={favouritehover} />}
               </button>
